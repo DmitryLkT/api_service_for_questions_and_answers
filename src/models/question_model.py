@@ -8,4 +8,4 @@ class Question(Base):
     text = Column(String, nullable=False)
     created_at = Column(String, nullable=False)
 
-    answers = relationship("Answer", cascade="all, delete", backref="question")
+    answers = relationship("Answer", cascade="all, delete", backref="question", lazy="joined")

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 
 from src.data.database import Base, engine
 from src.routers.question_router import router_question
@@ -10,3 +11,6 @@ app = FastAPI()
 
 app.include_router(router_question)
 app.include_router(router_answer)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

@@ -1,15 +1,14 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from fastapi import APIRouter, Depends, HTTPException
-import datetime
+from datetime import datetime
 
-from src.schemas.question_schema import QuestionOut
-from src.schemas.question_schema import QuestionCreate
-from src.schemas.answer_schema import AnswerCreate
+from src.schemas.question_schema import QuestionOut, QuestionCreate
+from src.schemas.answer_schema import AnswerCreate, AnswerOut
 from src.models.answer_model import Answer
 from src.models.question_model import Question
 from src.data.database import get_db
 
-router_question = APIRouter(prefix="/question", tags=["question"])
+router_question = APIRouter(prefix="/questions", tags=["question"])
 
 @router_question.get("/", response_model=list[QuestionOut])
 def read_questions(db: Session = Depends(get_db)):
@@ -17,20 +16,22 @@ def read_questions(db: Session = Depends(get_db)):
 
 @router_question.get("/{id}", response_model=QuestionOut)
 def read_question(id: int, db: Session = Depends(get_db)):
-    question = db.query(Question).filter(Question.id == id).first()
+    question = db.query(Question).options(joinedload(Question.answers)).filter(Question.id == id).first()
 
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
 
     return question
 
-@router_question.post("/", response_model=QuestionCreate)
+@router_question.post("/", response_model=QuestionOut)
 def create_question(question: QuestionCreate, db: Session = Depends(get_db)):
     db_question = Question(text=question.text, created_at=datetime.now())
     db.add(db_question)
     db.commit()
+    db.refresh(db_question)
+    return db_question
 
-@router_question.post("/{id}/answer", response_model=AnswerCreate)
+@router_question.post("/{id}/answers", response_model=AnswerOut)
 def create_answer(id: int, answer: AnswerCreate, db: Session = Depends(get_db)):
     question = db.query(Question).filter(Question.id == id).first()
 
@@ -40,6 +41,8 @@ def create_answer(id: int, answer: AnswerCreate, db: Session = Depends(get_db)):
     db_answer = Answer(question_id=id, text=answer.text, created_at=datetime.now())
     db.add(db_answer)
     db.commit()
+    db.refresh(db_answer)
+    return db_answer
 
 
 @router_question.delete("/{id}")

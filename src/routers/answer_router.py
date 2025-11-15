@@ -16,7 +16,7 @@ def get_answer(id: int, db: Session = Depends(get_db)):
 
     return answer
 
-@router_answer.delete("/{id}", response_model=AnswerOut)
+@router_answer.delete("/{id}")
 def delete_answer(id: int, db: Session = Depends(get_db)):
     answer = db.query(Answer).filter(Answer.id == id).first()
 
