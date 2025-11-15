@@ -9,13 +9,13 @@ from src.models.answer_model import Answer
 from src.models.question_model import Question
 from src.data.database import get_db
 
-router = APIRouter(prefix="/question", tags=["question"])
+router_question = APIRouter(prefix="/question", tags=["question"])
 
-@router.get("/", response_model=list[QuestionOut])
+@router_question.get("/", response_model=list[QuestionOut])
 def read_questions(db: Session = Depends(get_db)):
     return db.query(Question).all()
 
-@router.get("/{id}", response_model=QuestionOut)
+@router_question.get("/{id}", response_model=QuestionOut)
 def read_question(id: int, db: Session = Depends(get_db)):
     question = db.query(Question).filter(Question.id == id).first()
 
@@ -24,13 +24,13 @@ def read_question(id: int, db: Session = Depends(get_db)):
 
     return question
 
-@router.post("/", response_model=QuestionCreate)
+@router_question.post("/", response_model=QuestionCreate)
 def create_question(question: QuestionCreate, db: Session = Depends(get_db)):
     db_question = Question(text=question.text, created_at=datetime.now())
     db.add(db_question)
     db.commit()
 
-@router.post("/{id}/answer", response_model=AnswerCreate)
+@router_question.post("/{id}/answer", response_model=AnswerCreate)
 def create_answer(id: int, answer: AnswerCreate, db: Session = Depends(get_db)):
     question = db.query(Question).filter(Question.id == id).first()
 
@@ -42,7 +42,7 @@ def create_answer(id: int, answer: AnswerCreate, db: Session = Depends(get_db)):
     db.commit()
 
 
-@router.delete("/{id}")
+@router_question.delete("/{id}")
 def delete_question(id: int, db: Session = Depends(get_db)):
     question = db.query(Question).filter(Question.id == id).first()
 
