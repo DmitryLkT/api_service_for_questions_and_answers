@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List
 
-from src.schemas.answer_schema import AnswerOut
+from app.schemas.answer_schema import AnswerOut
 
 class QuestionCreate(BaseModel):
     text: str

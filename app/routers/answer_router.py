@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.schemas.answer_schema import AnswerOut
-from src.data.database import get_db
-from src.models.answer_model import Answer
+from app.schemas.answer_schema import AnswerOut
+from app.data.database import get_db
+from app.models.answer_model import Answer
 
 router_answer = APIRouter(prefix="/answers", tags=["Answers"])
 

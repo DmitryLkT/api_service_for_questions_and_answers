@@ -2,11 +2,11 @@ from sqlalchemy.orm import Session, joinedload
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime
 
-from src.schemas.question_schema import QuestionOut, QuestionCreate
-from src.schemas.answer_schema import AnswerCreate, AnswerOut
-from src.models.answer_model import Answer
-from src.models.question_model import Question
-from src.data.database import get_db
+from app.schemas.question_schema import QuestionOut, QuestionCreate
+from app.schemas.answer_schema import AnswerCreate, AnswerOut
+from app.models.answer_model import Answer
+from app.models.question_model import Question
+from app.data.database import get_db
 
 router_question = APIRouter(prefix="/questions", tags=["question"])
 
